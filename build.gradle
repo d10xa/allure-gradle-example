@@ -3,17 +3,18 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'ru.yandex.qatools.allure:allure-bundle:1.4.19'
-        classpath 'ru.yandex.qatools.allure:allure-report:1.3.9'
-        classpath 'ru.yandex.qatools.allure:allure-core:1.4.9'
-        classpath 'org.codehaus.groovy:groovy-all:2.4.5'
-        classpath 'ru.yandex.qatools.clay:clay-aether:2.5'
+        classpath('ru.yandex.qatools.allure:allure-bundle:1.4.19')
+        classpath('ru.yandex.qatools.allure:allure-core:1.4.9')
+        classpath('ru.yandex.qatools.allure:allure-report:1.3.9')
+        classpath group: 'ru.yandex.qatools.clay', name: 'clay-aether', version: '2.5'
+        classpath group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.3.5'
+        classpath group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.2'
     }
 }
 apply plugin: 'groovy'
 
 repositories {
-    jcenter()
+    mavenCentral()
 }
 
 configurations {
@@ -22,11 +23,12 @@ configurations {
 
 dependencies {
     compile 'org.codehaus.groovy:groovy-all:2.4.5'
+
+    testCompile 'org.codehaus.groovy:groovy-all:2.4.5'
     testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
     testCompile 'junit:junit:4.12'
+    testCompile 'ru.yandex.qatools.allure:allure-spock-1.0-adaptor:1.0'
 
-
-    compile 'ru.yandex.qatools.allure:allure-spock-1.0-adaptor:1.0'
     agent "org.aspectj:aspectjweaver:1.8.0"
 }
 
@@ -34,8 +36,10 @@ test.doFirst {
     jvmArgs "-javaagent:$configurations.agent.singleFile"
 }
 
-test.outputs.upToDateWhen {false}
+test.outputs.upToDateWhen { false }
 
 task allureReport << {
     ru.yandex.qatools.allure.AllureMain.main("$buildDir/allure-results", "$buildDir/allure-report")
 }
+
+test.finalizedBy allureReport
