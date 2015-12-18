@@ -8,6 +8,7 @@ buildscript {
 }
 
 apply plugin: 'groovy'
+apply plugin: 'idea'
 
 repositories {
     mavenCentral()
@@ -24,14 +25,14 @@ dependencies {
     testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
     testCompile 'junit:junit:4.12'
     testCompile 'ru.yandex.qatools.allure:allure-spock-1.0-adaptor:1.0'
-
+    compile 'ru.yandex.qatools.allure:allure-java-aspects:1.4.16'
     agent "org.aspectj:aspectjweaver:1.8.0"
 }
 
-test.doFirst {
-    jvmArgs "-javaagent:$configurations.agent.singleFile"
-}
-
+//test.doFirst {
+//    jvmArgs "-javaagent:$configurations.agent.singleFile"
+// don't work with groovy
+//}
 
 task allureReport << {
     ru.yandex.qatools.allure.AllureMain.main("$buildDir/allure-results", "$buildDir/allure-report")
