@@ -1,0 +1,23 @@
+ext.allureResultsDir = "$buildDir/allure-results"
+ext.allureReportDir = "$buildDir/allure-report"
+
+configurations {
+    allureReport
+}
+
+dependencies {
+    allureReport 'ru.yandex.qatools.allure:allure-bundle:1.4.19'
+    testCompile 'ru.yandex.qatools.allure:allure-spock-1.0-adaptor:1.0'
+    compile 'ru.yandex.qatools.allure:allure-java-aspects:1.4.16'
+}
+
+task allureReport(type: JavaExec) {
+    main = 'ru.yandex.qatools.allure.AllureMain'
+    args = [allureResultsDir, allureReportDir]
+    classpath = configurations.allureReport
+    systemProperty 'allure.results.directory', allureResultsDir
+}
+
+tasks.withType(Test) {
+    systemProperty 'allure.results.directory', allureResultsDir
+}

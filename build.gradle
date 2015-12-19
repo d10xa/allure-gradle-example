@@ -1,43 +1,15 @@
 apply plugin: 'groovy'
 apply plugin: 'idea'
-
-ext.allureResultsDir = "$buildDir/allure-results"
-ext.allureReportDir = "$buildDir/allure-report"
+apply from: 'gradle/allure.gradle'
 
 repositories {
     mavenCentral()
 }
 
-configurations {
-    allureReport
-}
-
 dependencies {
     compile 'org.codehaus.groovy:groovy-all:2.4.5'
-
-    testCompile 'org.codehaus.groovy:groovy-all:2.4.5'
     testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
     testCompile 'junit:junit:4.12'
-    testCompile 'ru.yandex.qatools.allure:allure-spock-1.0-adaptor:1.0'
-    compile 'ru.yandex.qatools.allure:allure-java-aspects:1.4.16'
-
-    allureReport 'ru.yandex.qatools.allure:allure-bundle:1.4.19'
-}
-
-//test.doFirst {
-//    jvmArgs "-javaagent:$configurations.agent.singleFile"
-// don't work with groovy
-//}
-
-task allureReport(type: JavaExec) {
-    main = 'ru.yandex.qatools.allure.AllureMain'
-    args = [allureResultsDir, allureReportDir]
-    classpath = configurations.allureReport
-    systemProperty 'allure.results.directory', allureResultsDir
-}
-
-tasks.withType(Test) {
-    systemProperty 'allure.results.directory', allureResultsDir
 }
 
 test.outputs.upToDateWhen { false }
